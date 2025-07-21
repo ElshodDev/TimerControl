@@ -1,0 +1,19 @@
+
+services:
+  timer.api:
+    environment:
+      DOTNET_USE_POLLING_FILE_WATCHER: 1
+      DOTNET_RUNNING_IN_CONTAINER: true
+    volumes:
+      - ./Timer.API:/src/Timer.API
+      - /src/Timer.API/bin
+      - /src/Timer.API/obj
+
+  timer.frontend:
+    environment:
+      DOTNET_USE_POLLING_FILE_WATCHER: 1
+      DOTNET_RUNNING_IN_CONTAINER: true
+    volumes:
+      - ./TimerUI:/src/TimerUI
+      - /src/TimerUI/bin
+      - /src/TimerUI/obj

@@ -1,0 +1,73 @@
+services:
+  timer.api:
+    image: timer-api
+    build:
+      context: .
+      dockerfile: Timer.API/Dockerfile
+    ports:
+      - "8089:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__DefaultConnection: Host=timer_db;Port=5432;Database=TimerDb;Username=postgres;Password=timercode
+    depends_on:
+      timer_db:
+        condition: service_healthy
+    networks:
+      - timer-network
+
+  timer.frontend:
+    image: timer-frontend
+    build:
+      context: .
+      dockerfile: TimerUI/Dockerfile
+    ports:
+      - "5100:80"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      API_BASE_URL: http://timer.api:8080/api/
+    depends_on:
+      - timer.api
+    networks:
+      - timer-network
+
+  timer_db:
+    image: postgres:16.1
+    container_name: timer_db
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: timercode
+      POSTGRES_DB: TimerDb
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - timer-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d TimerDb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    restart: always
+    ports:
+      - "5055:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@timer.com
+      PGADMIN_DEFAULT_PASSWORD: timercode
+    depends_on:
+      timer_db:
+        condition: service_healthy
+    networks:
+      - timer-network
+
+volumes:
+  postgres_data:
+
+networks:
+  timer-network:
+    driver: bridge
