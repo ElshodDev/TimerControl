@@ -1,0 +1,6 @@
+# Build va IDE fayllarini gitdan chiqarish
+bin/
+obj/
+*.user
+*.suo
+*.vs/
