@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36221.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Timer.API", "Timer.API\Timer.API.csproj", "{C4B78608-196E-4AD9-BE25-8FA63549AD86}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{81DDED9D-158B-E303-5F62-77A2896D2A5A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimerUI", "TimerUI\TimerUI.csproj", "{3F44C18B-9BF5-4396-9839-46F00D124E3A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C4B78608-196E-4AD9-BE25-8FA63549AD86}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C4B78608-196E-4AD9-BE25-8FA63549AD86}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C4B78608-196E-4AD9-BE25-8FA63549AD86}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C4B78608-196E-4AD9-BE25-8FA63549AD86}.Release|Any CPU.Build.0 = Release|Any CPU
+		{81DDED9D-158B-E303-5F62-77A2896D2A5A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81DDED9D-158B-E303-5F62-77A2896D2A5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81DDED9D-158B-E303-5F62-77A2896D2A5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81DDED9D-158B-E303-5F62-77A2896D2A5A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3F44C18B-9BF5-4396-9839-46F00D124E3A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F44C18B-9BF5-4396-9839-46F00D124E3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F44C18B-9BF5-4396-9839-46F00D124E3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F44C18B-9BF5-4396-9839-46F00D124E3A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {AC427F63-F4AE-41C4-9F03-9B48D99CEA24}
+	EndGlobalSection
+EndGlobal
