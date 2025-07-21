@@ -1,0 +1,213 @@
+﻿@page "/"
+@page "/timer"
+
+@inject IHttpClientFactory HttpClientFactory
+
+<div class="timer-container">
+    <div class="timer-card">
+        <h2 class="timer-title">⏱️ <b>TIMER TIZIMI</b></h2>
+
+        <!-- Duration input -->
+        <div class="mb-4">
+            <label for="duration" class="form-label"><b>Davomiylik (sekundda):</b></label>
+            <input @bind="duration" class="form-control form-control-lg custom-input" type="number" id="duration" placeholder="Masalan: 30" />
+        </div>
+
+        <!-- Action buttons -->
+        <div class="d-flex flex-wrap gap-2 mb-4 justify-content-between">
+            <button class="btn btn-success flex-fill action-btn" @onclick="StartTimer" disabled="@isLoading">
+                <i class="bi bi-play-fill"></i> Boshlash
+            </button>
+            <button class="btn btn-warning flex-fill action-btn" @onclick="PauseTimer" disabled="@isLoading">
+                <i class="bi bi-pause-fill"></i> To‘xtatish
+            </button>
+            <button class="btn btn-primary flex-fill action-btn" @onclick="ResumeTimer" disabled="@isLoading">
+                <i class="bi bi-play-circle"></i> Davom ettirish
+            </button>
+            <button class="btn btn-info flex-fill action-btn" @onclick="GetStatus" disabled="@isLoading">
+                <i class="bi bi-graph-up"></i> Holat
+            </button>
+            <button class="btn btn-dark flex-fill action-btn" @onclick="GetHistory" disabled="@isLoading">
+                <i class="bi bi-clock-history"></i> Tarix
+            </button>
+        </div>
+
+        <!-- Spinner -->
+        @if (isLoading)
+        {
+            <div class="text-center my-3">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Yuklanmoqda...</span>
+                </div>
+            </div>
+        }
+
+        <!-- Progress bar -->
+        @if (status != null && status.DurationInSeconds > 0)
+        {
+            var progressPercent = 100 - ((double)status.RemainingSeconds / status.DurationInSeconds * 100);
+            if (progressPercent < 0) progressPercent = 0;
+            if (progressPercent > 100) progressPercent = 100;
+
+            <div class="progress mb-3 custom-progress">
+                <div class="progress-bar progress-bar-striped progress-bar-animated bg-success"
+                     role="progressbar"
+                     style="width: @progressPercent.ToString("F0")%"
+                     aria-valuemin="0"
+                     aria-valuemax="100">
+                    ⏳ @status.RemainingSeconds sekund qoldi
+                </div>
+            </div>
+
+            <div class="text-center text-muted small mb-3">
+                Boshlangan: @status.StartTime?.ToLocalTime().ToString("HH:mm:ss") |
+                Tugaydi: @status.EndTime?.ToLocalTime().ToString("HH:mm:ss")
+            </div>
+        }
+
+        <!-- Status message -->
+        @if (!string.IsNullOrEmpty(statusMessage))
+        {
+            <div class="alert alert-info alert-dismissible fade show mt-3 custom-alert" role="alert">
+                <strong>ℹ️ Xabar:</strong> @statusMessage
+                <button type="button" class="btn-close" @onclick="@(() => statusMessage = null)"></button>
+            </div>
+        }
+
+        <!-- History Table -->
+        @if (historyList.Count > 0)
+        {
+            <h5 class="mt-4">📜 Taymerlar tarixi:</h5>
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover table-sm custom-table">
+                    <thead class="table-light text-center">
+                        <tr>
+                            <th>#</th>
+                            <th>Boshlangan</th>
+                            <th>Tugagan</th>
+                            <th>Davomiylik (s)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in historyList.Select((val, idx) => new { val, idx }))
+                        {
+                            <tr class="text-center">
+                                <td>@(item.idx + 1)</td>
+                                <td>@item.val.StartTime?.ToLocalTime().ToString("HH:mm:ss")</td>
+                                <td>@item.val.EndTime?.ToLocalTime().ToString("HH:mm:ss")</td>
+                                <td>@item.val.DurationInSeconds</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    int duration;
+    string? statusMessage;
+    List<TimerDto> historyList = new();
+    TimerDto? status;
+    bool isLoading = false;
+
+    private HttpClient ApiClient => HttpClientFactory.CreateClient("TimerApi");
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Sahifa qayta yuklanganda ham oxirgi holatni ko‘rsatish
+        await GetStatus();
+        await GetHistory();
+    }
+
+    private async Task StartTimer()
+    {
+        isLoading = true;
+        var response = await ApiClient.PostAsJsonAsync("timer/start?seconds=" + duration, new { });
+        statusMessage = response.IsSuccessStatusCode ? "✅ Taymer boshlandi." : "❌ Xatolik!";
+        await GetStatus();
+        isLoading = false;
+    }
+
+    private async Task PauseTimer()
+    {
+        isLoading = true;
+        var response = await ApiClient.PostAsync("timer/pause", null);
+        statusMessage = response.IsSuccessStatusCode ? "⏸️ Taymer to‘xtatildi." : "❌ Xatolik!";
+        await GetStatus();
+        isLoading = false;
+    }
+
+    private async Task ResumeTimer()
+    {
+        isLoading = true;
+        var response = await ApiClient.PostAsync("timer/resume", null);
+        statusMessage = response.IsSuccessStatusCode ? "🔁 Taymer davom etdi." : "❌ Xatolik!";
+        await GetStatus();
+        isLoading = false;
+    }
+
+    private async Task GetStatus()
+    {
+        isLoading = true;
+        try
+        {
+            var response = await ApiClient.GetAsync("timer/status");
+            if (response.IsSuccessStatusCode)
+            {
+                status = await response.Content.ReadFromJsonAsync<TimerDto>();
+                statusMessage = status is null
+                    ? "❌ Holat olinmadi."
+                    : $"⏱️ Qolgan: {status.RemainingSeconds} s | Boshlangan: {status.StartTime?.ToLocalTime():HH:mm:ss} | Tugaydi: {status.EndTime?.ToLocalTime():HH:mm:ss}";
+            }
+            else
+            {
+                statusMessage = $"❌ Holatni olishda xatolik: {response.StatusCode}";
+            }
+        }
+        catch (Exception ex)
+        {
+            statusMessage = $"❌ Istisno: {ex.Message}";
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private async Task GetHistory()
+    {
+        isLoading = true;
+        try
+        {
+            var response = await ApiClient.GetAsync("timer/history");
+            if (response.IsSuccessStatusCode)
+            {
+                historyList = await response.Content.ReadFromJsonAsync<List<TimerDto>>() ?? new();
+            }
+            else
+            {
+                statusMessage = $"❌ Tarixni olishda xatolik: {response.StatusCode}";
+            }
+        }
+        catch (Exception ex)
+        {
+            statusMessage = $"❌ Istisno: {ex.Message}";
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    public class TimerDto
+    {
+        public DateTime? StartTime { get; set; }
+        public DateTime? EndTime { get; set; }
+        public int RemainingSeconds { get; set; }
+        public int DurationInSeconds { get; set; }
+        public bool IsPaused { get; set; }
+        public bool IsCompleted { get; set; }
+    }
+}
