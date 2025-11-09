@@ -26,3 +26,9 @@ Bu loyiha Blazor Server va ASP.NET Core Web API texnologiyalari yordamida yarati
 
 ```bash
 git clone https://github.com/ElshodDev/TimerControl.git
+
+✅ Docker orqali ishga tushirish
+
+docker compose build
+docker compose up -d
+
