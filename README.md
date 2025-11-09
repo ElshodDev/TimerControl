@@ -21,7 +21,7 @@ Bu loyiha Blazor Server va ASP.NET Core Web API texnologiyalari yordamida yarati
 - 📅 Boshlanish va tugash vaqtlarini ko‘rsatish
 
 ## 🚀 Ishga tushirish
-
+<img width="1596" height="821" alt="image" src="https://github.com/user-attachments/assets/73d71e82-9fad-456a-97d0-d2a2d58ce184" />
 1. Loyihani klonlang:
 
 ```bash
@@ -40,5 +40,3 @@ Brauzerda tekshirib ko‘rish
 | UI      | [http://localhost:5100]         |
 | PGAdmin | [http://localhost:5055]         |
 
-
-<img width="1596" height="821" alt="image" src="https://github.com/user-attachments/assets/73d71e82-9fad-456a-97d0-d2a2d58ce184" />
