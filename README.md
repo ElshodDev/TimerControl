@@ -34,11 +34,11 @@ docker compose up -d
 
 Brauzerda tekshirib ko‘rish
 
-| Xizmat  | URL                                                            |
-| ------- | -------------------------------------------------------------- |
-| API     | [http://localhost:8089/swagger](http://localhost:8089/swagger) |
-| UI      | [http://localhost:5100](http://localhost:5100)                 |
-| PGAdmin | [http://localhost:5055](http://localhost:5055)                 |
+| Xizmat  | URL                             |                             
+| ------- | ------------------------------- |
+| API     | [http://localhost:8089/swagger] |
+| UI      | [http://localhost:5100]         |
+| PGAdmin | [http://localhost:5055]         |
 
 
 <img width="1596" height="821" alt="image" src="https://github.com/user-attachments/assets/73d71e82-9fad-456a-97d0-d2a2d58ce184" />
